@@ -1,0 +1,95 @@
+---
+import { formatShowDate, type Show } from '../lib/bandsintown';
+
+interface Props {
+  shows: Show[];
+  past?: boolean;
+}
+const { shows, past = false } = Astro.props;
+---
+<ol class="shows">
+  {shows.map((show) => {
+    const d = formatShowDate(show.datetime);
+    const place = [show.city, show.region].filter(Boolean).join(', ');
+    return (
+      <li class:list={['show', { past }]}>
+        <div class="date">
+          <span class="month">{d.month}</span>
+          <span class="day">{d.day}</span>
+        </div>
+        <div class="info">
+          <h3>{show.venue}</h3>
+          <p class="muted">
+            {place} · {d.weekday} {d.time}
+            {past && ` · ${d.year}`}
+          </p>
+        </div>
+        {!past && (
+          <div class="actions">
+            {show.ticketUrl && (
+              <a class="btn btn-small btn-primary" href={show.ticketUrl} target="_blank" rel="noopener">Tickets</a>
+            )}
+            <a class="btn btn-small" href={show.eventUrl} target="_blank" rel="noopener">RSVP</a>
+          </div>
+        )}
+      </li>
+    );
+  })}
+</ol>
+
+<style>
+  .shows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+  .show {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .month {
+    color: var(--sunset);
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+  }
+  .day {
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  h3 {
+    margin: 0 0 2px;
+    font-size: 1.2rem;
+  }
+  .info p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+  .past {
+    opacity: 0.65;
+  }
+  @media (max-width: 600px) {
+    .show {
+      grid-template-columns: 52px 1fr;
+    }
+    .actions {
+      grid-column: 2;
+    }
+  }
+</style>

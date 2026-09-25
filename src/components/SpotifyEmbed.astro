@@ -1,0 +1,26 @@
+---
+interface Props {
+  type: 'artist' | 'album' | 'track';
+  id: string;
+  height?: number;
+  title?: string;
+}
+const { type, id, height = 352, title = 'Spotify player' } = Astro.props;
+---
+<iframe
+  class="spotify"
+  src={`https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`}
+  height={height}
+  title={title}
+  loading="lazy"
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+></iframe>
+
+<style>
+  .spotify {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    background: var(--surface);
+  }
+</style>

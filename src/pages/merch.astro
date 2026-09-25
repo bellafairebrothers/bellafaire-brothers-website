@@ -1,0 +1,103 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import settings from '../content/settings.json';
+import badge from '../assets/brand/sunset-cliffs-badge.png';
+import { getMerch } from '../lib/content';
+import { localImage } from '../lib/images';
+
+const merch = getMerch();
+---
+<Base title="Merch" description={`${settings.bandName} merch, available at our shows.`}>
+  <div class="container page-header">
+    <p class="eyebrow">Available at shows</p>
+    <h1>Merch</h1>
+    {merch.intro && <p>{merch.intro}</p>}
+  </div>
+  <section class="section">
+    <div class="container">
+      {merch.items.length > 0 ? (
+        <div class="grid grid-3">
+          {merch.items.map((item) => {
+            const img = localImage(item.image);
+            return (
+              <article class="card item">
+                <div class="photo">
+                  {img ? (
+                    <Image src={img} alt={item.name} widths={[400, 700]} sizes="(max-width: 700px) 100vw, 33vw" />
+                  ) : (
+                    <Image src={badge} alt="" width={400} class="placeholder" />
+                  )}
+                  {item.soldOut && <span class="sold-out">Sold out</span>}
+                </div>
+                <div class="card-body">
+                  <div class="title-row">
+                    <h3>{item.name}</h3>
+                    {item.price && <span class="price">${item.price}</span>}
+                  </div>
+                  {item.sizes && <p class="muted sizes">Sizes: {item.sizes}</p>}
+                  {item.description && <p class="desc">{item.description}</p>}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <p class="empty">New merch coming soon.</p>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .photo {
+    position: relative;
+    aspect-ratio: 1;
+    background: var(--surface-2);
+  }
+  .photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .photo .placeholder {
+    object-fit: contain;
+    padding: 18%;
+    opacity: 0.35;
+  }
+  .sold-out {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+  }
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .title-row h3 {
+    margin: 0;
+  }
+  .price {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--sunset);
+  }
+  .sizes {
+    margin: 6px 0 0;
+    font-size: 0.9rem;
+  }
+  .desc {
+    margin: 10px 0 0;
+    font-size: 0.95rem;
+  }
+</style>

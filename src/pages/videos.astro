@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import settings from '../content/settings.json';
+import { getVideos } from '../lib/youtube';
+import VideoEmbed from '../components/VideoEmbed.astro';
+
+const videos = await getVideos();
+const [featured, ...rest] = videos;
+---
+<Base title="Videos" description={`Official music videos from ${settings.bandName}.`}>
+  <div class="container page-header">
+    <p class="eyebrow">Official music videos</p>
+    <h1>Videos</h1>
+  </div>
+  <section class="section">
+    <div class="container">
+      {featured ? (
+        <Fragment>
+          <VideoEmbed video={featured} width={1200} />
+          <h2 class="featured-title">{featured.title}</h2>
+          {rest.length > 0 && (
+            <div class="grid grid-3 more">
+              {rest.map((video) => (
+                <div>
+                  <VideoEmbed video={video} width={640} />
+                  <h3 class="video-title">{video.title}</h3>
+                </div>
+              ))}
+            </div>
+          )}
+        </Fragment>
+      ) : (
+        <p class="empty">Videos are on their way. <a href={settings.social.youtube}>Watch on YouTube</a>.</p>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .featured-title {
+    margin-top: 18px;
+    font-size: 1.8rem;
+  }
+  .more {
+    margin-top: 48px;
+  }
+  .video-title {
+    margin-top: 12px;
+    font-size: 1.15rem;
+  }
+</style>

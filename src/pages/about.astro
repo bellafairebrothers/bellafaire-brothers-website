@@ -1,0 +1,94 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import settings from '../content/settings.json';
+import badge from '../assets/brand/sunset-cliffs-badge.png';
+import { localImage } from '../lib/images';
+import { frontmatter as about, Content as Bio } from '../content/about.md';
+
+const photo = localImage(about.photo) ?? badge;
+const members = (about.members ?? []).filter((m: { name?: string }) => m.name);
+---
+<Base title="About" description={`About ${settings.bandName}, a band from San Diego, CA.`}>
+  <div class="container page-header">
+    <p class="eyebrow">The band</p>
+    <h1>About</h1>
+  </div>
+  <section class="section">
+    <div class="container about">
+      <div class="bio">
+        <Bio />
+      </div>
+      <Image src={photo} alt={settings.bandName} widths={[480, 900]} sizes="(max-width: 860px) 100vw, 45vw" class="about-photo" />
+    </div>
+  </section>
+  {members.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <h2>Members</h2>
+        <div class="grid grid-4">
+          {members.map((m: { name: string; role?: string; photo?: string }) => {
+            const img = localImage(m.photo);
+            return (
+              <div class="member">
+                {img ? (
+                  <Image src={img} alt={m.name} width={400} height={400} fit="cover" />
+                ) : (
+                  <div class="member-placeholder" aria-hidden="true">{m.name.charAt(0)}</div>
+                )}
+                <h3>{m.name}</h3>
+                {m.role && <p class="muted">{m.role}</p>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: clamp(24px, 5vw, 64px);
+    align-items: start;
+  }
+  .bio {
+    font-size: 1.125rem;
+    max-width: 62ch;
+  }
+  .about :global(.about-photo) {
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+  }
+  @media (max-width: 860px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+  }
+  .member img,
+  .member-placeholder {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+  }
+  .member-placeholder {
+    display: grid;
+    place-items: center;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    font-family: var(--font-display);
+    font-size: 4rem;
+    color: var(--muted);
+  }
+  .member h3 {
+    margin: 0;
+  }
+  .member p {
+    margin: 2px 0 0;
+  }
+</style>

@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import settings from '../content/settings.json';
+import { getReleases, ARTIST_ID } from '../lib/spotify';
+import ReleaseCard from '../components/ReleaseCard.astro';
+import SpotifyEmbed from '../components/SpotifyEmbed.astro';
+
+const releases = await getReleases();
+---
+<Base title="Music" description={`Stream every ${settings.bandName} release on Spotify, Apple Music and more.`}>
+  <div class="container page-header">
+    <p class="eyebrow">Discography</p>
+    <h1>Music</h1>
+  </div>
+  <section class="section">
+    <div class="container">
+      {releases.length > 0 && (
+        <div class="grid grid-4 releases">
+          {releases.map((release) => <ReleaseCard release={release} />)}
+        </div>
+      )}
+      <h2 class="player-heading">Listen on Spotify</h2>
+      <SpotifyEmbed type="artist" id={ARTIST_ID} height={452} title={`${settings.bandName} on Spotify`} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .releases {
+    margin-bottom: 64px;
+  }
+  .player-heading {
+    font-size: 1.6rem;
+  }
+</style>

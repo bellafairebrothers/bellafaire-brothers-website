@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import settings from '../content/settings.json';
+import { getUpcomingShows, getPastShows, type Show } from '../lib/bandsintown';
+import ShowList from '../components/ShowList.astro';
+
+const [upcoming, past] = await Promise.all([getUpcomingShows(), getPastShows()]);
+
+// Lets Google show upcoming gigs as events in search results.
+const eventData = upcoming.map((s: Show) => ({
+  '@context': 'https://schema.org',
+  '@type': 'MusicEvent',
+  name: `${settings.bandName} at ${s.venue}`,
+  startDate: s.datetime,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  location: {
+    '@type': 'Place',
+    name: s.venue,
+    address: { '@type': 'PostalAddress', addressLocality: s.city, addressRegion: s.region, addressCountry: s.country },
+  },
+  performer: { '@type': 'MusicGroup', name: settings.bandName },
+  ...(s.ticketUrl ? { offers: { '@type': 'Offer', url: s.ticketUrl } } : {}),
+}));
+---
+<Base title="Shows" description={`Upcoming ${settings.bandName} shows around San Diego.`}>
+  {eventData.length > 0 && <script slot="head" type="application/ld+json" set:html={JSON.stringify(eventData)} />}
+  <div class="container page-header">
+    <p class="eyebrow">Live</p>
+    <h1>Upcoming Shows</h1>
+  </div>
+  <section class="section">
+    <div class="container">
+      {upcoming.length > 0 ? (
+        <ShowList shows={upcoming} />
+      ) : (
+        <p class="empty">
+          No shows booked right now. Follow us on
+          {settings.social.bandsintown ? <a href={settings.social.bandsintown}>Bandsintown</a> : 'Bandsintown'} or
+          <a href={settings.social.instagram}>Instagram</a> to hear about the next one first.
+        </p>
+      )}
+    </div>
+  </section>
+  {past.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <h2>Past shows</h2>
+        <ShowList shows={past.slice(0, 20)} past />
+      </div>
+    </section>
+  )}
+</Base>

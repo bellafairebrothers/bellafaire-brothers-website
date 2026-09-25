@@ -1,0 +1,122 @@
+# Pages CMS configuration: https://pagescms.org/docs/configuration/
+# Log in at https://app.pagescms.org with GitHub and open this repository.
+media:
+  input: src/assets/uploads
+  output: /src/assets/uploads
+
+content:
+  - name: links
+    label: Links page
+    type: file
+    path: src/content/links.json
+    fields:
+      - { name: tagline, label: Tagline under the band name, type: string }
+      - { name: profileImage, label: Profile photo (leave empty to use the Sunset Cliffs logo), type: image }
+      - { name: showLatestRelease, label: Automatically show latest Spotify release, type: boolean }
+      - { name: showLatestVideo, label: Automatically show latest music video, type: boolean }
+      - { name: showNextShow, label: Automatically show next show, type: boolean }
+      - name: links
+        label: Buttons (drag to reorder)
+        type: object
+        list: true
+        fields:
+          - { name: label, label: Button text, type: string, required: true }
+          - { name: url, label: Link (https://... or a site page like /merch), type: string, required: true }
+          - { name: enabled, label: Show this button, type: boolean, default: true }
+          - { name: highlight, label: Highlight in orange, type: boolean, default: false }
+          - { name: expires, label: Hide automatically after this date (optional), type: date }
+
+  - name: merch
+    label: Merch
+    type: file
+    path: src/content/merch.json
+    fields:
+      - { name: intro, label: Intro text, type: text }
+      - name: items
+        label: Items (drag to reorder)
+        type: object
+        list: true
+        fields:
+          - { name: name, label: Name, type: string, required: true }
+          - { name: price, label: Price (numbers only, e.g. 25), type: string }
+          - { name: sizes, label: Sizes (e.g. S, M, L, XL), type: string }
+          - { name: description, label: Description, type: text }
+          - { name: image, label: Photo, type: image }
+          - { name: soldOut, label: Sold out, type: boolean, default: false }
+
+  - name: albums
+    label: Photo albums
+    type: collection
+    path: src/content/albums
+    format: json
+    filename: "{primary}.json"
+    view:
+      fields: [title, date]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - { name: title, label: Album title, type: string, required: true }
+      - { name: date, label: Date, type: date }
+      - { name: cover, label: Cover photo (optional; defaults to the first photo), type: image }
+      - name: photos
+        label: Photos (drag to reorder)
+        type: object
+        list: true
+        fields:
+          - { name: image, label: Photo, type: image, required: true }
+          - { name: caption, label: Caption (optional), type: string }
+
+  - name: about
+    label: About
+    type: file
+    path: src/content/about.md
+    fields:
+      - { name: body, label: Bio, type: rich-text }
+      - { name: photo, label: Band photo, type: image }
+      - name: members
+        label: Members
+        type: object
+        list: true
+        fields:
+          - { name: name, label: Name, type: string, required: true }
+          - { name: role, label: Instrument / role, type: string }
+          - { name: photo, label: Photo, type: image }
+
+  - name: contact
+    label: Contact
+    type: file
+    path: src/content/contact.json
+    fields:
+      - { name: intro, label: Intro text, type: text }
+      - { name: bookingEmail, label: Booking email, type: string }
+      - name: contacts
+        label: Other contacts
+        type: object
+        list: true
+        fields:
+          - { name: label, label: "Label (e.g. Press)", type: string }
+          - { name: email, label: Email, type: string }
+
+  - name: settings
+    label: Site settings
+    type: file
+    path: src/content/settings.json
+    fields:
+      - { name: bandName, label: Band name, type: string }
+      - { name: tagline, label: Tagline (home page headline), type: string }
+      - { name: description, label: Search engine description, type: text }
+      - { name: heroImage, label: Home page image (leave empty for the boat artwork), type: image }
+      - name: social
+        label: Social links (leave blank to hide)
+        type: object
+        fields:
+          - { name: instagram, label: Instagram, type: string }
+          - { name: spotify, label: Spotify artist page, type: string }
+          - { name: youtube, label: YouTube Music Videos playlist, type: string }
+          - { name: appleMusic, label: Apple Music, type: string }
+          - { name: bandsintown, label: Bandsintown, type: string }
+          - { name: tiktok, label: TikTok, type: string }
+          - { name: facebook, label: Facebook, type: string }

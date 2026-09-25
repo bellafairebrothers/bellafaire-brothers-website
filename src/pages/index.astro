@@ -1,0 +1,193 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import settings from '../content/settings.json';
+import boat from '../assets/brand/boat.jpg';
+import { localImage, remoteImage } from '../lib/images';
+import { getReleases, ARTIST_ID } from '../lib/spotify';
+import { getVideos } from '../lib/youtube';
+import { getUpcomingShows } from '../lib/bandsintown';
+import SpotifyEmbed from '../components/SpotifyEmbed.astro';
+import VideoEmbed from '../components/VideoEmbed.astro';
+import ShowList from '../components/ShowList.astro';
+import InstagramGrid from '../components/InstagramGrid.astro';
+
+const hero = localImage(settings.heroImage) ?? boat;
+const [releases, videos, shows] = await Promise.all([getReleases(), getVideos(), getUpcomingShows()]);
+const latest = releases[0];
+const latestCover = latest ? await remoteImage(latest.image, 700) : undefined;
+const latestVideo = videos[0];
+---
+<Base>
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">Bellafaire Brothers</p>
+        <h1 class="visually-hidden">{settings.bandName}</h1>
+        <p class="hero-tagline">{settings.tagline}</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href={latest?.spotifyUrl ?? settings.social.spotify} target="_blank" rel="noopener">
+            {latest ? `Listen to “${latest.name}”` : 'Listen on Spotify'}
+          </a>
+          <a class="btn" href="/shows">Upcoming shows</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <Image src={hero} alt={`${settings.bandName} artwork`} widths={[480, 800, 1200]} sizes="(max-width: 860px) 100vw, 50vw" loading="eager" fetchpriority="high" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Latest release</p>
+          <h2>{latest?.name ?? 'Listen now'}</h2>
+        </div>
+        <a class="text-link" href="/music">All music →</a>
+      </div>
+      {latest ? (
+        <div class="release-feature">
+          {latestCover && <img class="release-cover" src={latestCover} alt={`${latest.name} cover art`} loading="lazy" />}
+          <div>
+            <SpotifyEmbed type="album" id={latest.id} height={352} title={`${latest.name} on Spotify`} />
+            {latest.links.length > 0 && (
+              <div class="listen-row">
+                {latest.links.map((l) => (
+                  <a class="btn btn-small" href={l.url} target="_blank" rel="noopener">{l.label}</a>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      ) : (
+        <SpotifyEmbed type="artist" id={ARTIST_ID} height={352} title={`${settings.bandName} on Spotify`} />
+      )}
+    </div>
+  </section>
+
+  {latestVideo && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Latest video</p>
+            <h2>{latestVideo.title}</h2>
+          </div>
+          <a class="text-link" href="/videos">All videos →</a>
+        </div>
+        <VideoEmbed video={latestVideo} width={1200} />
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Live</p>
+          <h2>Upcoming shows</h2>
+        </div>
+        <a class="text-link" href="/shows">All shows →</a>
+      </div>
+      {shows.length > 0 ? (
+        <ShowList shows={shows.slice(0, 3)} />
+      ) : (
+        <p class="empty">No shows booked right now. Follow us on Instagram to hear about the next one first.</p>
+      )}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Instagram</p>
+          <h2>Follow along</h2>
+        </div>
+        <a class="text-link" href={settings.social.instagram} target="_blank" rel="noopener">Open Instagram →</a>
+      </div>
+      <InstagramGrid limit={6} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    /* faint sunset glow behind the artwork */
+    content: '';
+    position: absolute;
+    inset: auto -20% -60% 30%;
+    height: 120%;
+    background: radial-gradient(closest-side, rgba(240, 112, 58, 0.16), rgba(176, 80, 143, 0.08) 55%, transparent);
+    pointer-events: none;
+  }
+  .hero-inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(24px, 5vw, 64px);
+    padding-block: clamp(32px, 6vw, 72px);
+  }
+  .hero-tagline {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+    line-height: 1.02;
+    font-weight: 600;
+    margin-bottom: 28px;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .hero-art img {
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  }
+  @media (max-width: 860px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+    }
+    .hero-art {
+      order: -1;
+      max-width: 420px;
+    }
+  }
+  .release-feature {
+    display: grid;
+    grid-template-columns: minmax(0, 352px) 1fr;
+    gap: clamp(20px, 3vw, 36px);
+    align-items: start;
+  }
+  .release-cover {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+  .listen-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  @media (max-width: 700px) {
+    .release-feature {
+      grid-template-columns: 1fr;
+    }
+    .release-cover {
+      display: none;
+    }
+  }
+</style>

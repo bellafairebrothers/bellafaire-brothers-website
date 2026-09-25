@@ -1,0 +1,59 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import settings from '../../content/settings.json';
+import { getAlbums } from '../../lib/content';
+import { localImage } from '../../lib/images';
+
+const albums = getAlbums();
+---
+<Base title="Photos" description={`Photos of ${settings.bandName}, live and behind the scenes.`}>
+  <div class="container page-header">
+    <p class="eyebrow">Gallery</p>
+    <h1>Photos</h1>
+  </div>
+  <section class="section">
+    <div class="container">
+      {albums.length > 0 ? (
+        <div class="grid grid-3">
+          {albums.map((album) => {
+            const cover = localImage(album.cover) ?? localImage(album.photos[0]?.image);
+            return (
+              <a class="card album" href={`/photos/${album.slug}`}>
+                {cover && <Image src={cover} alt="" widths={[400, 700]} sizes="(max-width: 700px) 100vw, 33vw" />}
+                <div class="card-body">
+                  <h3>{album.title}</h3>
+                  <p class="muted">{album.photos.length} photos</p>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      ) : (
+        <p class="empty">Photos coming soon.</p>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .album {
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .album:hover {
+    border-color: var(--muted);
+  }
+  .album img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .album h3 {
+    margin: 0;
+  }
+  .album p {
+    margin: 4px 0 0;
+    font-size: 0.9rem;
+  }
+</style>

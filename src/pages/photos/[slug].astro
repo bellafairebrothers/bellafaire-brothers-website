@@ -1,0 +1,150 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import { getAlbums, type Album } from '../../lib/content';
+import { localImage } from '../../lib/images';
+
+export function getStaticPaths() {
+  return getAlbums().map((album) => ({ params: { slug: album.slug }, props: { album } }));
+}
+
+const { album } = Astro.props as { album: Album };
+const photos = await Promise.all(
+  album.photos
+    .map((p) => ({ ...p, meta: localImage(p.image) }))
+    .filter((p) => p.meta)
+    .map(async (p) => ({ ...p, full: (await getImage({ src: p.meta!, width: 2000, format: 'webp' })).src })),
+);
+const date = album.date
+  ? new Date(album.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+  : '';
+---
+<Base title={album.title}>
+  <div class="container page-header">
+    <a class="text-link" href="/photos">← All photos</a>
+    <h1>{album.title}</h1>
+    {date && <p>{date}</p>}
+  </div>
+  <section class="section">
+    <div class="container gallery">
+      {photos.map((p, i) => (
+        <a href={p.full} class="thumb" data-index={i} data-caption={p.caption ?? ''}>
+          <Image src={p.meta!} alt={p.caption || album.title} widths={[400, 800]} sizes="(max-width: 700px) 50vw, 33vw" />
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <dialog class="lightbox" aria-label="Photo viewer">
+    <img alt="" />
+    <p class="caption"></p>
+    <button type="button" class="lb-close" aria-label="Close">×</button>
+    <button type="button" class="lb-prev" aria-label="Previous photo">‹</button>
+    <button type="button" class="lb-next" aria-label="Next photo">›</button>
+  </dialog>
+</Base>
+
+<style>
+  .gallery {
+    columns: 3 260px;
+    column-gap: 12px;
+  }
+  .thumb {
+    display: block;
+    margin-bottom: 12px;
+    break-inside: avoid;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .thumb img {
+    width: 100%;
+    height: auto;
+    transition: opacity 0.2s;
+  }
+  .thumb:hover img {
+    opacity: 0.85;
+  }
+  .lightbox {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(0, 0, 0, 0.94);
+    color: var(--text);
+  }
+  .lightbox[open] {
+    display: grid;
+    place-items: center;
+  }
+  .lightbox img {
+    max-width: 92vw;
+    max-height: 84dvh;
+    object-fit: contain;
+  }
+  .caption {
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: var(--muted);
+  }
+  .lightbox button {
+    position: absolute;
+    background: none;
+    border: 0;
+    color: var(--text);
+    font-size: 2.6rem;
+    width: 56px;
+    height: 56px;
+    cursor: pointer;
+  }
+  .lb-close {
+    top: 8px;
+    right: 8px;
+  }
+  .lb-prev {
+    left: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .lb-next {
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('.lightbox')!;
+  const img = dialog.querySelector('img')!;
+  const caption = dialog.querySelector<HTMLParagraphElement>('.caption')!;
+  const thumbs = [...document.querySelectorAll<HTMLAnchorElement>('.thumb')];
+  let index = 0;
+
+  function show(i: number) {
+    index = (i + thumbs.length) % thumbs.length;
+    img.src = thumbs[index].href;
+    caption.textContent = thumbs[index].dataset.caption ?? '';
+  }
+
+  thumbs.forEach((thumb, i) =>
+    thumb.addEventListener('click', (e) => {
+      e.preventDefault();
+      show(i);
+      dialog.showModal();
+    }),
+  );
+  dialog.querySelector('.lb-close')!.addEventListener('click', () => dialog.close());
+  dialog.querySelector('.lb-prev')!.addEventListener('click', () => show(index - 1));
+  dialog.querySelector('.lb-next')!.addEventListener('click', () => show(index + 1));
+  dialog.addEventListener('click', (e) => e.target === dialog && dialog.close());
+  document.addEventListener('keydown', (e) => {
+    if (!dialog.open) return;
+    if (e.key === 'ArrowLeft') show(index - 1);
+    if (e.key === 'ArrowRight') show(index + 1);
+  });
+</script>

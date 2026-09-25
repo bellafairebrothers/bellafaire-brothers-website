@@ -1,0 +1,46 @@
+# Bellafaire Brothers website
+
+Built with [Astro](https://astro.build), hosted free on GitHub Pages, edited with [Pages CMS](https://pagescms.org).
+
+## Editing the site (no code)
+
+1. Go to <https://app.pagescms.org> and sign in with GitHub.
+2. Open this repository.
+3. Pick a section: **Links page**, **Merch**, **Photo albums**, **About**, **Contact**, or **Site settings**.
+4. Make changes, upload photos, drag items to reorder, then click **Save**.
+
+The live site updates about 1–2 minutes after you save.
+
+## What updates automatically
+
+The site rebuilds every 6 hours and picks up anything new:
+
+| Section | Source | What you do |
+|---|---|---|
+| Music | Spotify (+ Apple Music, Amazon, Tidal, Deezer links via song.link) | Release music as usual |
+| Videos | YouTube "Music Videos" playlist | Add new music videos to the playlist |
+| Shows | Bandsintown | Add shows on Bandsintown for Artists |
+| Instagram | Instagram | Post as usual |
+
+To update right away, go to the repository's **Actions** tab → **Build and deploy site** → **Run workflow**.
+
+## Secrets (Settings → Secrets and variables → Actions)
+
+| Name | Where to get it |
+|---|---|
+| `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET` | developer.spotify.com → Dashboard → Create app |
+| `BANDSINTOWN_APP_ID` | Bandsintown for Artists dashboard |
+| `INSTAGRAM_ACCESS_TOKEN` | Meta developer app (Instagram API with Instagram Login) |
+
+Variable (not secret): `SITE_URL`, e.g. `https://bellafairebrothers.com`.
+
+Every source is optional. Without a key, that section falls back gracefully (e.g. a Spotify player instead of the release grid).
+
+## Running locally
+
+```bash
+npm install
+npm run dev
+```
+
+Copy `.env.example` to `.env` to use the API keys locally.

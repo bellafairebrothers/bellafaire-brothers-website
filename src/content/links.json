@@ -1,0 +1,14 @@
+{
+  "tagline": "New music, videos & shows",
+  "profileImage": "",
+  "showLatestRelease": true,
+  "showLatestVideo": true,
+  "showNextShow": true,
+  "links": [
+    { "label": "Listen on Spotify", "url": "https://open.spotify.com/artist/63dLwOuU8L3Ylr6QjHEtq1", "enabled": true, "highlight": false, "expires": "" },
+    { "label": "Watch our music videos", "url": "https://www.youtube.com/playlist?list=PLOv0iJWcw4Es", "enabled": true, "highlight": false, "expires": "" },
+    { "label": "Merch", "url": "/merch", "enabled": true, "highlight": false, "expires": "" },
+    { "label": "Upcoming shows", "url": "/shows", "enabled": true, "highlight": false, "expires": "" },
+    { "label": "Our website", "url": "/", "enabled": true, "highlight": false, "expires": "" }
+  ]
+}

@@ -1,0 +1,84 @@
+---
+// Shows a thumbnail with a play button; the YouTube player only loads when clicked,
+// which keeps pages fast.
+import Icon from './Icon.astro';
+import { remoteImage } from '../lib/images';
+import type { Video } from '../lib/youtube';
+
+interface Props {
+  video: Video;
+  width?: number;
+}
+const { video, width = 960 } = Astro.props;
+const thumb = await remoteImage(video.thumbnail, width);
+---
+<div class="video">
+  <button type="button" class="video-frame" data-video-id={video.id} aria-label={`Play ${video.title}`}>
+    {thumb && <img src={thumb} alt="" loading="lazy" decoding="async" />}
+    <span class="play"><Icon name="play" size={30} /></span>
+  </button>
+</div>
+
+<style>
+  .video-frame {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #000;
+    cursor: pointer;
+  }
+  .video-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s, opacity 0.2s;
+    opacity: 0.85;
+  }
+  .video-frame:hover img {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+  .play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 68px;
+    height: 68px;
+    display: grid;
+    place-items: center;
+    padding-left: 4px;
+    border-radius: 50%;
+    background: rgba(11, 11, 13, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: var(--text);
+    transition: background 0.15s;
+  }
+  .video-frame:hover .play {
+    background: var(--sunset);
+    color: #120c08;
+  }
+  .video :global(iframe) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-radius: var(--radius);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.video-frame[data-video-id]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${button.dataset.videoId}?autoplay=1&rel=0`;
+      iframe.title = button.getAttribute('aria-label') ?? 'YouTube video';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      button.replaceWith(iframe);
+    });
+  });
+</script>

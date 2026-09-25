@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import settings from '../content/settings.json';
+import contact from '../content/contact.json';
+import SocialLinks from '../components/SocialLinks.astro';
+import Icon from '../components/Icon.astro';
+
+const contacts = [
+  ...(contact.bookingEmail ? [{ label: 'Booking', email: contact.bookingEmail }] : []),
+  ...(contact.contacts as { label: string; email: string }[]).filter((c) => c.email),
+];
+---
+<Base title="Contact" description={`Contact ${settings.bandName} for booking and press.`}>
+  <div class="container page-header">
+    <p class="eyebrow">Get in touch</p>
+    <h1>Contact</h1>
+    {contact.intro && <p>{contact.intro}</p>}
+  </div>
+  <section class="section">
+    <div class="container">
+      {contacts.length > 0 ? (
+        <ul class="contacts">
+          {contacts.map((c) => (
+            <li>
+              <p class="eyebrow">{c.label}</p>
+              <a href={`mailto:${c.email}`} class="email"><Icon name="mail" /> {c.email}</a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">Send us a message on <a href={settings.social.instagram}>Instagram</a>.</p>
+      )}
+      <h2 class="follow">Follow us</h2>
+      <SocialLinks size={26} />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contacts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 28px;
+  }
+  .contacts .eyebrow {
+    margin: 0 0 4px;
+  }
+  .email {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+    text-decoration: none;
+    word-break: break-all;
+  }
+  .email:hover {
+    color: var(--sunset);
+  }
+  .follow {
+    margin-top: 56px;
+    font-size: 1.6rem;
+  }
+</style>
