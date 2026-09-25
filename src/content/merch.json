@@ -6,13 +6,13 @@
       "price": "25",
       "sizes": "S, M, L, XL",
       "description": "Placeholder item: replace with a real photo and details in the editor.",
-      "image": "/src/assets/uploads/Boat Logo Square.jpeg",
       "soldOut": false
     },
     {
       "name": "Boat Sticker",
       "price": "5",
       "description": "Placeholder item: replace with a real photo and details in the editor.",
+      "image": "/src/assets/uploads/Boat Logo Square-1.jpeg",
       "soldOut": false
     }
   ]
