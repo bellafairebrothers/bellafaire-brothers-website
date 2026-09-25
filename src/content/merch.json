@@ -1,7 +1,19 @@
 {
   "intro": "All merch is available at our shows. Come say hi at the merch table!",
   "items": [
-    { "name": "Sunset Cliffs Tee", "price": "25", "sizes": "S, M, L, XL", "description": "Placeholder item: replace with a real photo and details in the editor.", "image": "", "soldOut": false },
-    { "name": "Boat Sticker", "price": "5", "sizes": "", "description": "Placeholder item: replace with a real photo and details in the editor.", "image": "", "soldOut": false }
+    {
+      "name": "Sunset Cliffs Tee",
+      "price": "25",
+      "sizes": "S, M, L, XL",
+      "description": "Placeholder item: replace with a real photo and details in the editor.",
+      "image": "/src/assets/uploads/Boat Logo Square.jpeg",
+      "soldOut": false
+    },
+    {
+      "name": "Boat Sticker",
+      "price": "5",
+      "description": "Placeholder item: replace with a real photo and details in the editor.",
+      "soldOut": false
+    }
   ]
 }
