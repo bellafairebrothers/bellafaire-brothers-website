@@ -38,7 +38,7 @@ jobs:
           shopt -s nullglob nocaseglob
           files=(src/assets/photos/*.heic src/assets/uploads/*.heic)
           if [ ${#files[@]} -gt 0 ]; then
-            sudo apt-get update -qq && sudo apt-get install -y -qq libheif-examples
+            sudo apt-get update -qq && sudo apt-get install -y -qq libheif-examples libheif-plugin-libde265
             for f in "${files[@]}"; do heif-convert -q 90 "$f" "${f%.*}.jpg"; done
           fi
       - run: npm run build
