@@ -2,10 +2,8 @@
 // Link-in-bio page (replaces Linktree). Point the Instagram bio link here.
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import settings from '../content/settings.json';
-import linksPage from '../content/links.json';
+import { settings, linksPage, getActiveLinks } from '../lib/content';
 import badge from '../assets/brand/sunset-cliffs-badge.png';
-import { getActiveLinks } from '../lib/content';
 import { localImage, remoteImage } from '../lib/images';
 import { getReleases } from '../lib/spotify';
 import { getVideos } from '../lib/youtube';

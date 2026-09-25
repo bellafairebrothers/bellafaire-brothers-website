@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import { getImage } from 'astro:assets';
-import settings from '../content/settings.json';
+import { settings } from '../lib/content';
 import logo from '../assets/brand/logo-white.png';
 import boat from '../assets/brand/boat.jpg';
 import SocialLinks from '../components/SocialLinks.astro';
@@ -13,8 +13,10 @@ interface Props {
   /** Hide the site navigation and footer (used by the /links page). */
   bare?: boolean;
 }
-const { title, description = settings.description, bare = false } = Astro.props;
-const fullTitle = title ? `${title} | ${settings.bandName}` : `${settings.bandName}: ${settings.tagline}`;
+const { title, bare = false } = Astro.props;
+const description =
+  Astro.props.description || settings.description || `${settings.bandName}: music, videos and shows.`;
+const fullTitle = title ? `${title} | ${settings.bandName}` : settings.bandName;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 const ogImage = await getImage({ src: boat, width: 1200, format: 'jpg' });
 const ogImageUrl = Astro.site ? new URL(ogImage.src, Astro.site).href : ogImage.src;

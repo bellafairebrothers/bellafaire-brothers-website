@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import settings from '../content/settings.json';
+import { settings } from '../lib/content';
 import { getUpcomingShows, getPastShows, type Show } from '../lib/bandsintown';
 import ShowList from '../components/ShowList.astro';
 

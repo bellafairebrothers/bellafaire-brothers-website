@@ -1,12 +1,10 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import settings from '../content/settings.json';
+import { settings, merch } from '../lib/content';
 import badge from '../assets/brand/sunset-cliffs-badge.png';
-import { getMerch } from '../lib/content';
 import { localImage } from '../lib/images';
 
-const merch = getMerch();
 ---
 <Base title="Merch" description={`${settings.bandName} merch, available at our shows.`}>
   <div class="container page-header">

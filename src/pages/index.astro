@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import settings from '../content/settings.json';
+import { settings } from '../lib/content';
 import boat from '../assets/brand/boat.jpg';
 import { localImage, remoteImage } from '../lib/images';
 import { getReleases, ARTIST_ID } from '../lib/spotify';
@@ -22,9 +22,11 @@ const latestVideo = videos[0];
   <section class="hero">
     <div class="container hero-inner">
       <div class="hero-text">
-        <p class="eyebrow">Bellafaire Brothers</p>
+        <p class="eyebrow">San Diego, CA</p>
         <h1 class="visually-hidden">{settings.bandName}</h1>
-        <p class="hero-tagline">{settings.tagline}</p>
+        {settings.tagline && (
+          <p class:list={["hero-tagline", { long: settings.tagline.length > 45 }]}>{settings.tagline}</p>
+        )}
         <div class="hero-actions">
           <a class="btn btn-primary" href={latest?.spotifyUrl ?? settings.social.spotify} target="_blank" rel="noopener">
             {latest ? `Listen to “${latest.name}”` : 'Listen on Spotify'}
@@ -143,6 +145,10 @@ const latestVideo = videos[0];
     line-height: 1.02;
     font-weight: 600;
     margin-bottom: 28px;
+  }
+  .hero-tagline.long {
+    font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+    line-height: 1.1;
   }
   .hero-actions {
     display: flex;

@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import settings from '../content/settings.json';
+import { settings } from '../lib/content';
 import { getReleases, ARTIST_ID } from '../lib/spotify';
 import ReleaseCard from '../components/ReleaseCard.astro';
 import SpotifyEmbed from '../components/SpotifyEmbed.astro';

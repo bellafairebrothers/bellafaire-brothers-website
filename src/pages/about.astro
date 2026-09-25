@@ -1,13 +1,13 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import settings from '../content/settings.json';
+import { settings, about } from '../lib/content';
 import badge from '../assets/brand/sunset-cliffs-badge.png';
 import { localImage } from '../lib/images';
-import { frontmatter as about, Content as Bio } from '../content/about.md';
+import { Content as Bio } from '../content/about.md';
 
 const photo = localImage(about.photo) ?? badge;
-const members = (about.members ?? []).filter((m: { name?: string }) => m.name);
+const members = about.members;
 ---
 <Base title="About" description={`About ${settings.bandName}, a band from San Diego, CA.`}>
   <div class="container page-header">
@@ -27,7 +27,7 @@ const members = (about.members ?? []).filter((m: { name?: string }) => m.name);
       <div class="container">
         <h2>Members</h2>
         <div class="grid grid-4">
-          {members.map((m: { name: string; role?: string; photo?: string }) => {
+          {members.map((m) => {
             const img = localImage(m.photo);
             return (
               <div class="member">

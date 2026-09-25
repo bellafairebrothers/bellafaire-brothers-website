@@ -1,4 +1,4 @@
-import settings from '../content/settings.json';
+import { settings } from './content';
 
 export interface Video {
   id: string;
@@ -7,7 +7,7 @@ export interface Video {
   thumbnail: string;
 }
 
-const PLAYLIST_ID = new URL(settings.social.youtube).searchParams.get('list') ?? '';
+const PLAYLIST_ID = settings.social.youtube.match(/[?&]list=([\w-]+)/)?.[1] ?? '';
 
 function decode(text: string): string {
   return text

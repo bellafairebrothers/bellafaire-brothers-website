@@ -1,12 +1,11 @@
 ---
 import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import settings from '../content/settings.json';
-import gallery from '../content/photos.json';
+import { settings, photos as photoPaths } from '../lib/content';
 import { localImage } from '../lib/images';
 
 // Newest uploads are added to the end of the list, so show the list in reverse.
-const paths = [...(gallery.photos as string[])].reverse();
+const paths = [...photoPaths].reverse();
 const photos = await Promise.all(
   paths
     .map((path) => localImage(path))

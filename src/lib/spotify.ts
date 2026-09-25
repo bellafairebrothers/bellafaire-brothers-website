@@ -1,4 +1,4 @@
-import settings from '../content/settings.json';
+import { settings } from './content';
 import { env } from './env';
 
 export interface PlatformLink {

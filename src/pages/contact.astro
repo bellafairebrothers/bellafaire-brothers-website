@@ -1,13 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
-import settings from '../content/settings.json';
-import contact from '../content/contact.json';
+import { settings, contact } from '../lib/content';
 import SocialLinks from '../components/SocialLinks.astro';
 import Icon from '../components/Icon.astro';
 
 const contacts = [
   ...(contact.bookingEmail ? [{ label: 'Booking', email: contact.bookingEmail }] : []),
-  ...(contact.contacts as { label: string; email: string }[]).filter((c) => c.email),
+  ...contact.contacts,
 ];
 ---
 <Base title="Contact" description={`Contact ${settings.bandName} for booking and press.`}>
