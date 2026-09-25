@@ -21,7 +21,7 @@ Every photo in `src/assets/photos` shows on the Photos page, newest first.
 
 To delete a photo: Pages CMS → **Media** → **Photos page** → delete it.
 
-Note: Pages CMS can only upload files under about 4 MB, one at a time. For big photos (merch, members) use the same GitHub upload page with `src/assets/uploads` instead, then pick the photo in Pages CMS.
+Note: Pages CMS can only upload files under about 4 MB, one at a time. For merch, band and member photos, upload them to `src/assets/uploads` on GitHub (shortcut: <https://bellafairebrothers.com/upload>), then choose them in the Pages CMS photo field.
 
 ## What updates automatically
 

@@ -17,7 +17,7 @@ content:
     path: src/content/links.json
     fields:
       - { name: tagline, label: Tagline under the band name, type: string }
-      - { name: profileImage, label: Profile photo (leave empty to use the Sunset Cliffs logo), type: image, media: uploads }
+      - { name: profileImage, label: Profile photo (leave empty to use the Sunset Cliffs logo), type: image, media: uploads, description: "Upload big photos at bellafairebrothers.com/upload first, then choose them here" }
       - { name: showLatestRelease, label: Automatically show latest Spotify release, type: boolean }
       - { name: showLatestVideo, label: Automatically show latest music video, type: boolean }
       - { name: showNextShow, label: Automatically show next show, type: boolean }
@@ -47,7 +47,7 @@ content:
           - { name: price, label: Price (numbers only, e.g. 25), type: string }
           - { name: sizes, label: Sizes (e.g. S, M, L, XL), type: string }
           - { name: description, label: Description, type: text }
-          - { name: image, label: Photo, type: image, media: uploads }
+          - { name: image, label: Photo, type: image, media: uploads, description: "Upload big photos at bellafairebrothers.com/upload first, then choose them here" }
           - { name: soldOut, label: Sold out, type: boolean, default: false }
 
   - name: about
@@ -56,7 +56,7 @@ content:
     path: src/content/about.md
     fields:
       - { name: body, label: Bio, type: rich-text }
-      - { name: photo, label: Band photo, type: image, media: uploads }
+      - { name: photo, label: Band photo, type: image, media: uploads, description: "Upload big photos at bellafairebrothers.com/upload first, then choose them here" }
       - name: members
         label: Members
         type: object
@@ -64,7 +64,7 @@ content:
         fields:
           - { name: name, label: Name, type: string, required: true }
           - { name: role, label: Instrument / role, type: string }
-          - { name: photo, label: Photo, type: image, media: uploads }
+          - { name: photo, label: Photo, type: image, media: uploads, description: "Upload big photos at bellafairebrothers.com/upload first, then choose them here" }
 
   - name: contact
     label: Contact
@@ -89,7 +89,7 @@ content:
       - { name: bandName, label: Band name, type: string }
       - { name: tagline, label: Tagline (home page headline), type: string }
       - { name: description, label: Search engine description, type: text }
-      - { name: heroImage, label: Home page image (leave empty for the boat artwork), type: image, media: uploads }
+      - { name: heroImage, label: Home page image (leave empty for the boat artwork), type: image, media: uploads, description: "Upload big photos at bellafairebrothers.com/upload first, then choose them here" }
       - name: social
         label: Social links (leave blank to hide)
         type: object
