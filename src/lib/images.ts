@@ -11,7 +11,8 @@ const localImages = import.meta.glob<{ default: ImageMetadata }>(
 export function localImage(path: string | undefined | null): ImageMetadata | undefined {
   if (!path) return undefined;
   const key = path.startsWith('/') ? path : `/${path}`;
-  return localImages[key]?.default;
+  // iPhone HEIC uploads are converted to .jpg during the GitHub build.
+  return localImages[key]?.default ?? localImages[key.replace(/\.heic$/i, '.jpg')]?.default;
 }
 
 // Downloads and optimizes a remote image at build time. Falls back to the original URL

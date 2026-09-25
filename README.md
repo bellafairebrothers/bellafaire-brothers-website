@@ -6,10 +6,22 @@ Built with [Astro](https://astro.build), hosted free on GitHub Pages, edited wit
 
 1. Go to <https://app.pagescms.org> and sign in with GitHub.
 2. Open this repository.
-3. Pick a section: **Links page**, **Merch**, **Photos**, **About**, **Contact**, or **Site settings**.
+3. Pick a section: **Links page**, **Merch**, **About**, **Contact**, or **Site settings**.
 4. Make changes, upload photos, drag items to reorder, then click **Save**.
 
 The live site updates about 1–2 minutes after you save.
+
+## Adding photos to the Photos page (many at once)
+
+Every photo in `src/assets/photos` shows on the Photos page, newest first.
+
+1. Open <https://github.com/bellafairebrothers/bellafaire-brothers-website/upload/main/src/assets/photos>
+2. Drag in photos (or tap **choose your files** and select several). Full-size originals and iPhone HEIC photos are fine, up to 25 MB each.
+3. Click **Commit changes**.
+
+To delete a photo: Pages CMS → **Media** → **Photos page** → delete it.
+
+Note: Pages CMS can only upload files under about 4 MB, one at a time. For big photos (merch, members) use the same GitHub upload page with `src/assets/uploads` instead, then pick the photo in Pages CMS.
 
 ## What updates automatically
 

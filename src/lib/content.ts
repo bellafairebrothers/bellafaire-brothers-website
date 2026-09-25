@@ -4,7 +4,6 @@ import rawSettings from '../content/settings.json';
 import rawLinks from '../content/links.json';
 import rawMerch from '../content/merch.json';
 import rawContact from '../content/contact.json';
-import rawPhotos from '../content/photos.json';
 import { frontmatter as rawAbout } from '../content/about.md';
 
 type Loose<T> = Partial<Record<keyof T, unknown>> & Record<string, unknown>;
@@ -79,9 +78,6 @@ export const contact = {
     .map((entry) => ({ label: str(entry.label), email: str(entry.email) }))
     .filter((entry) => entry.email),
 };
-
-const p = rawPhotos as Loose<object>;
-export const photos: string[] = (Array.isArray(p.photos) ? p.photos : []).map(str).filter(Boolean);
 
 const a = obj(rawAbout);
 export const about = {

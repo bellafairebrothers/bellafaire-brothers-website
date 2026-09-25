@@ -1,16 +1,44 @@
 ---
 import { Image, getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import { settings, photos as photoPaths } from '../lib/content';
-import { localImage } from '../lib/images';
+import { execFileSync } from 'node:child_process';
+import type { ImageMetadata } from 'astro';
+import { settings } from '../lib/content';
 
-// Newest uploads are added to the end of the list, so show the list in reverse.
-const paths = [...photoPaths].reverse();
+// Every photo in src/assets/photos appears here. Upload them in bulk on GitHub
+// (see README) or one at a time through the Pages CMS "Photos page" media library.
+const files = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/photos/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG,WEBP}',
+  { eager: true },
+);
+
+// Newest first, by when each photo was added to the repository. iPhone HEIC photos are
+// converted to JPG during the GitHub build, so those use the original .heic file's date.
+function addedAt(path: string): number {
+  const file = path.slice(1);
+  const base = file.replace(/\.[^.]+$/, '');
+  for (const candidate of [file, `${base}.heic`, `${base}.HEIC`]) {
+    try {
+      const out = execFileSync('git', ['log', '--diff-filter=A', '--format=%ct', '-1', '--', candidate], {
+        encoding: 'utf8',
+      }).trim();
+      if (out) return Number(out);
+    } catch {
+      return 0;
+    }
+  }
+  return Date.now() / 1000;
+}
+
+const sorted = Object.entries(files)
+  .map(([path, mod]) => ({ path, meta: mod.default, added: addedAt(path) }))
+  .sort((a, b) => b.added - a.added || b.path.localeCompare(a.path));
+
 const photos = await Promise.all(
-  paths
-    .map((path) => localImage(path))
-    .filter((meta) => meta !== undefined)
-    .map(async (meta) => ({ meta, full: (await getImage({ src: meta, width: Math.min(2000, meta.width), format: 'webp' })).src })),
+  sorted.map(async ({ meta }) => ({
+    meta,
+    full: (await getImage({ src: meta, width: Math.min(2000, meta.width), format: 'webp' })).src,
+  })),
 );
 ---
 <Base title="Photos" description={`Photos of ${settings.bandName}.`}>
