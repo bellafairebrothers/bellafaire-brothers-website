@@ -6,7 +6,7 @@ Built with [Astro](https://astro.build), hosted free on GitHub Pages, edited wit
 
 1. Go to <https://app.pagescms.org> and sign in with GitHub.
 2. Open this repository.
-3. Pick a section: **Links page**, **Merch**, **Photo albums**, **About**, **Contact**, or **Site settings**.
+3. Pick a section: **Links page**, **Merch**, **Photos**, **About**, **Contact**, or **Site settings**.
 4. Make changes, upload photos, drag items to reorder, then click **Save**.
 
 The live site updates about 1–2 minutes after you save.

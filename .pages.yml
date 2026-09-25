@@ -44,30 +44,18 @@ content:
           - { name: image, label: Photo, type: image }
           - { name: soldOut, label: Sold out, type: boolean, default: false }
 
-  - name: albums
-    label: Photo albums
-    type: collection
-    path: src/content/albums
-    format: json
-    filename: "{primary}.json"
-    view:
-      fields: [title, date]
-      primary: title
-      sort: [date, title]
-      default:
-        sort: date
-        order: desc
+  - name: photos
+    label: Photos
+    type: file
+    path: src/content/photos.json
     fields:
-      - { name: title, label: Album title, type: string, required: true }
-      - { name: date, label: Date, type: date }
-      - { name: cover, label: Cover photo (optional; defaults to the first photo), type: image }
       - name: photos
-        label: Photos (drag to reorder)
-        type: object
-        list: true
-        fields:
-          - { name: image, label: Photo, type: image, required: true }
-          - { name: caption, label: Caption (optional), type: string }
+        label: Photos (select or upload as many as you like; newest show first on the site)
+        type: image
+        multiple: true
+        unique: true
+        rename: random
+        extensions: [jpg, jpeg, png, webp]
 
   - name: about
     label: About

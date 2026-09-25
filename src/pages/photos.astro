@@ -1,43 +1,42 @@
 ---
 import { Image, getImage } from 'astro:assets';
-import Base from '../../layouts/Base.astro';
-import { getAlbums, type Album } from '../../lib/content';
-import { localImage } from '../../lib/images';
+import Base from '../layouts/Base.astro';
+import settings from '../content/settings.json';
+import gallery from '../content/photos.json';
+import { localImage } from '../lib/images';
 
-export function getStaticPaths() {
-  return getAlbums().map((album) => ({ params: { slug: album.slug }, props: { album } }));
-}
-
-const { album } = Astro.props as { album: Album };
+// Newest uploads are added to the end of the list, so show the list in reverse.
+const paths = [...(gallery.photos as string[])].reverse();
 const photos = await Promise.all(
-  album.photos
-    .map((p) => ({ ...p, meta: localImage(p.image) }))
-    .filter((p) => p.meta)
-    .map(async (p) => ({ ...p, full: (await getImage({ src: p.meta!, width: 2000, format: 'webp' })).src })),
+  paths
+    .map((path) => localImage(path))
+    .filter((meta) => meta !== undefined)
+    .map(async (meta) => ({ meta, full: (await getImage({ src: meta, width: Math.min(2000, meta.width), format: 'webp' })).src })),
 );
-const date = album.date
-  ? new Date(album.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
-  : '';
 ---
-<Base title={album.title}>
+<Base title="Photos" description={`Photos of ${settings.bandName}.`}>
   <div class="container page-header">
-    <a class="text-link" href="/photos">← All photos</a>
-    <h1>{album.title}</h1>
-    {date && <p>{date}</p>}
+    <p class="eyebrow">Gallery</p>
+    <h1>Photos</h1>
   </div>
   <section class="section">
-    <div class="container gallery">
-      {photos.map((p, i) => (
-        <a href={p.full} class="thumb" data-index={i} data-caption={p.caption ?? ''}>
-          <Image src={p.meta!} alt={p.caption || album.title} widths={[400, 800]} sizes="(max-width: 700px) 50vw, 33vw" />
-        </a>
-      ))}
+    <div class="container">
+      {photos.length > 0 ? (
+        <div class="gallery">
+          {photos.map((p) => (
+            <a href={p.full} class="thumb">
+              <Image src={p.meta} alt={`${settings.bandName} photo`} widths={[400, 800]} sizes="(max-width: 700px) 50vw, 33vw" />
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="empty">Photos coming soon.</p>
+      )}
     </div>
   </section>
 
   <dialog class="lightbox" aria-label="Photo viewer">
     <img alt="" />
-    <p class="caption"></p>
     <button type="button" class="lb-close" aria-label="Close">×</button>
     <button type="button" class="lb-prev" aria-label="Previous photo">‹</button>
     <button type="button" class="lb-next" aria-label="Next photo">›</button>
@@ -46,12 +45,21 @@ const date = album.date
 
 <style>
   .gallery {
-    columns: 3 260px;
-    column-gap: 12px;
+    columns: 3 240px;
+    column-gap: 10px;
+  }
+  @media (max-width: 600px) {
+    .gallery {
+      columns: 2;
+      column-gap: 6px;
+    }
+    .thumb {
+      margin-bottom: 6px;
+    }
   }
   .thumb {
     display: block;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     break-inside: avoid;
     border-radius: 6px;
     overflow: hidden;
@@ -81,16 +89,8 @@ const date = album.date
   }
   .lightbox img {
     max-width: 92vw;
-    max-height: 84dvh;
+    max-height: 88dvh;
     object-fit: contain;
-  }
-  .caption {
-    position: absolute;
-    bottom: 16px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    color: var(--muted);
   }
   .lightbox button {
     position: absolute;
@@ -121,14 +121,12 @@ const date = album.date
 <script>
   const dialog = document.querySelector<HTMLDialogElement>('.lightbox')!;
   const img = dialog.querySelector('img')!;
-  const caption = dialog.querySelector<HTMLParagraphElement>('.caption')!;
   const thumbs = [...document.querySelectorAll<HTMLAnchorElement>('.thumb')];
   let index = 0;
 
   function show(i: number) {
     index = (i + thumbs.length) % thumbs.length;
     img.src = thumbs[index].href;
-    caption.textContent = thumbs[index].dataset.caption ?? '';
   }
 
   thumbs.forEach((thumb, i) =>
@@ -146,5 +144,13 @@ const date = album.date
     if (!dialog.open) return;
     if (e.key === 'ArrowLeft') show(index - 1);
     if (e.key === 'ArrowRight') show(index + 1);
+  });
+
+  // Swipe left/right on phones.
+  let startX = 0;
+  dialog.addEventListener('touchstart', (e) => (startX = e.touches[0].clientX), { passive: true });
+  dialog.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
   });
 </script>
